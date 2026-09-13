@@ -50,6 +50,8 @@ app/src/test/          JVM unit tests (JUnit4 + kotlinx-coroutines-test)
   feature/transactions/TransactionDetailViewModelTest.kt
   core/domain/BudgetUseCasesTest.kt             (Phase 4: allowance + thresholds)
   feature/budgets/BudgetViewModelTest.kt        (Phase 4: rollover prefill, save/clear)
+  core/voice/VoiceExpenseParserTest.kt          (Phase 5: parser rules)
+  feature/voice/VoiceViewModelTest.kt           (Phase 5: capture state machine)
 
 app/src/androidTest/   instrumented tests (AndroidX Test, real in-memory Room)
   core/database/TransactionDaoTest.kt
@@ -60,9 +62,10 @@ Use cases take a `java.time.Clock` — tests inject `Clock.fixed(...)` so month
 boundaries, leap days and timezones are deterministic. Add new repository
 methods to the fakes as well.
 
-## Security checklist (Phase 0–4 posture)
+## Security checklist (Phase 0–5 posture)
 
-- No runtime permissions requested. Microphone arrives with voice (Phase 5).
+- Only runtime permission is RECORD_AUDIO (Phase 5 voice), requested inline when the
+  voice screen opens — never at launch. Notifications arrive in Phase 7.
 - No API keys in source. If a future phase needs one: `local.properties` +
   BuildConfig, never VCS. Keystores never committed (see .gitignore).
 - Do not log amounts, merchants, notes, or other financial content — use
@@ -89,6 +92,9 @@ there. What was verified in-sandbox:
 - Phase 4: `verification/BudgetHarness.java` mirrors budget pacing rules
   (80/100% thresholds, daily allowance incl. leap months + clamps, rollover
   prefill decisions) — 19/19 assertions pass.
+- Phase 5: `verification/VoiceHarness.java` mirrors the voice parser rules
+  (amount/type/category/merchant/date extraction, NoAmount path) and the
+  duplicate-signature guard — 31/31 assertions pass.
 
 **First thing to do on a machine with Android Studio / network:**
 
@@ -110,6 +116,7 @@ docs: add progress_so_far.txt (built vs remaining phases)
 feat: phase 2 onboarding flow
 feat: phase 3 core transaction experience
 feat: phase 4 budgeting
+feat: phase 5 voice quick entry
 ```
 
 Do not commit `local.properties`, keystores, or generated credentials.

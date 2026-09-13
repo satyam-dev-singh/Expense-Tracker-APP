@@ -130,6 +130,13 @@ REQUIRED = [
     "app/src/test/java/com/left/app/core/domain/BudgetUseCasesTest.kt",
     "app/src/test/java/com/left/app/feature/budgets/BudgetViewModelTest.kt",
     "verification/BudgetHarness.java",
+    # Phase 5 — voice
+    "app/src/main/java/com/left/app/core/voice/VoiceExpenseParser.kt",
+    "app/src/main/java/com/left/app/feature/voice/VoiceViewModel.kt",
+    "app/src/main/java/com/left/app/feature/voice/VoiceCaptureScreen.kt",
+    "app/src/test/java/com/left/app/core/voice/VoiceExpenseParserTest.kt",
+    "app/src/test/java/com/left/app/feature/voice/VoiceViewModelTest.kt",
+    "verification/VoiceHarness.java",
 ]
 for rel in REQUIRED:
     check(f"file exists: {rel}", os.path.isfile(os.path.join(ROOT, rel)))
