@@ -1,0 +1,82 @@
+================================================================================
+LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
+Last updated: 2026-09-13 (checkpoint: feat initialize Android architecture and local finance data layer)
+================================================================================
+
+WHAT IS BUILT (DONE)
+--------------------------------------------------------------------------------
+PHASE 0 — PROJECT FOUNDATION
+[✓] Gradle project: Kotlin 2.0.21, AGP 8.7.3, KSP, Jetpack Compose + Material 3,
+    version catalog (gradle/libs.versions.toml), Gradle 8.11.1 wrapper config,
+    debug/release build types (debug = com.left.app.debug), ProGuard rules
+[✓] Package structure: com.left.app → core/ (common, data, database, datastore,
+    designsystem, di, domain, model, navigation, network, security, utils)
+    + feature/ (splash, onboarding, dashboard, transactions, analytics, settings)
+[✓] Hilt dependency injection: AppModule (Clock, application scope), DatabaseModule,
+    DataStoreModule, RepositoryModule (interface→Room bindings)
+[✓] Navigation skeleton: Splash, Onboarding, Home, Transactions, AddTransaction,
+    Analytics, Settings + bottom nav (Home|Transactions|Analytics|Settings)
+    + centered Add FAB; Splash routes onboarding↔home via DataStore flag
+[✓] Design system: original spruce/neutral palette (light+dark), typography scale
+    (moneyHero 44sp), spacing/shape/elevation tokens, LeftPrimaryButton/
+    LeftTonalButton/LeftTextButton, LeftTextField/LeftAmountField, LeftCard,
+    LeftIcons icon-key conventions with safe fallback
+[✓] CI: GitHub Actions workflow (lint + unit tests + assembleDebug)
+[✓] Manifest: zero runtime permissions, allowBackup=false, cleartextTraffic=false
+
+PHASE 1 — LOCAL DATA LAYER
+[✓] Room database left.db v1 (exportSchema → app/schemas, NO destructive fallback)
+[✓] Entities (6): UserProfile, Category, Transaction, Subscription, IncomeSource,
+    MonthlyBudget — TEXT ids, snake_case columns per DB spec
+[✓] DAOs (6): insert/update/delete/getById/getAll/getByMonth/getByDateRange/
+    getByCategory/search(escaped LIKE)/observeRecent/observeMonthlyTotals,
+    Flow-based reactive reads
+[✓] Repositories (6): domain interfaces + Room impls; UI never touches DAOs
+[✓] Use cases (11): Add/Update/Delete/Get/GetTransactions/GetMonthlyTransactions
+    + CalculateMonthlyIncome/Expenses/RemainingMoney/BudgetRemaining/
+    BudgetUsagePercentage — with PRD §18 validation (amount>0, ISO 4217 currency,
+    category must exist when set)
+[✓] Money value class: integer minor units only (₹100.50 = 10050 paise),
+    Math.addExact/subtractExact overflow safety, parse() with Indian/Western
+    grouping + currency symbols, rejects over-precise input
+[✓] MonthRange: half-open epoch-day ranges; correct Dec→Jan rollover, leap years,
+    month lengths, timezone-aware "current month" via injected Clock
+[✓] Default categories seeded idempotently (10 PRD categories, deterministic
+    default-* IDs + INSERT OR IGNORE)
+[✓] Data integrity: category FK onDelete=SET_NULL (history survives deletion),
+    archive-first categories, unique (year,month) budget index
+[✓] DataStore: onboarding flag + default currency preferences
+[✓] SafeLogger (no financial data in logs), UiState (Loading/Success/Empty/Error)
+[✓] Docs: README.md, ARCHITECTURE.md, DATABASE.md, DEVELOPMENT.md
+[✓] Tests: 5 JVM test classes + fakes; 2 instrumented Room test classes
+[✓] Verification (offline sandbox, no Android SDK): JVM harness mirroring
+    Money/MonthRange/calculations 1:1 → 61/61 assertions PASSED; structural
+    suite → 186/186 checks PASSED; defect found+fixed: "Rs. 10" parse stray dot
+
+WHAT IS LEFT TO BUILD (NOT STARTED)
+--------------------------------------------------------------------------------
+[ ] PHASE 2 — ONBOARDING (NEXT): welcome → currency → income → budget →
+    categories → completion flag; clean install → configured Home
+[ ] PHASE 3 — CORE TRANSACTIONS: dashboard wiring (money left, income/spent,
+    recent list), amount-first add form, transaction list/detail, edit, delete,
+    search/filter
+[ ] PHASE 4 — BUDGETING: total + category budgets, progress UI, warning
+    thresholds, daily allowance, month rollover
+[ ] PHASE 5 — VOICE: mic permission, SpeechRecognizer, rule-based parser,
+    category matching, confirmation screen, duplicate protection
+[ ] PHASE 6 — ANALYTICS: category distribution, trends, month comparison,
+    recurring totals
+[ ] PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS: subscription CRUD UI, renewal calc,
+    WorkManager reminders, budget alerts, weekly/monthly summaries
+[ ] PHASE 8 — ANDROID-NATIVE: widget, app shortcuts, QS tile, biometric lock
+[ ] PHASE 9 — CLOUD (optional): auth, remote DB, sync engine, backup/restore
+[ ] PHASE 10 — AI: structured extraction, smart categorization, insights
+[ ] PHASE 11 — QA: UI tests, accessibility pass, offline + migration tests,
+    performance, security review
+[ ] PHASE 12 — RELEASE: signing, Play Console, privacy policy, store listing
+
+IMMEDIATE NEXT STEP ON A DEV MACHINE
+--------------------------------------------------------------------------------
+    cd Left && ./gradlew lintDebug testDebugUnitTest assembleDebug
+(First run downloads Gradle 8.11.1 + dependencies.)
+================================================================================
