@@ -1,19 +1,28 @@
 LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
-Last updated: 2026-09-13 (after Phase 8 — Android-native)
+Last updated: 2026-09-13 (after Phase 9 — Cloud optional planning)
 Repo: https://github.com/satyam-dev-singh/Expense-Tracker-APP (branch main)
 
-DONE: Phases 0–8.
+DONE: Phases 0–9.
+
+Phase 7 completed:
+- Subscriptions, renewal math, notifications permission, notification planning, WorkManager scheduler/worker.
 
 Phase 8 completed:
-- Native Android planning rules for widget text, launcher shortcuts, and biometric lock timeout.
-- Home-screen widget receiver entry point.
-- Quick Settings tile service entry point.
-- Biometric lock controller around pure domain rule.
-- USE_BIOMETRIC permission added only when Phase 8 ships.
+- Widget receiver, Quick Settings tile service, biometric lock planning/controller, native Android rules.
+
+Phase 9 completed:
+- Optional cloud-sync planning rules: sync only after sign-in, sync states, latest-update conflict helper.
+- Backup/restore guard: encrypted backups only, explicit restore eligibility checks.
+- CloudSyncViewModel shell keeps the app local-first and opt-in.
 
 Verification in sandbox:
+- Phase 7 SubscriptionHarness: 9/9 passed.
+- Phase7NotificationHarness: 6/6 passed.
 - Phase8Harness: 6/6 passed.
+- Phase9Harness: 6/6 passed.
 - Android Gradle/lint/build not run here because no Android SDK/Gradle/network.
 
 NEXT:
-- Phase 9 — Cloud optional: auth, remote DB, sync engine, backup/restore.
+- Phase 10 — AI: structured extraction, smart categorization, insights.
+- Phase 11 — QA.
+- Phase 12 — Release.
