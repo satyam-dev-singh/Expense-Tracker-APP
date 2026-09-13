@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-      Privacy-first (PRD §21 / Technical Architecture §7): permissions are added
-      only when the feature that needs them exists. RECORD_AUDIO powers the
-      Phase 5 voice quick entry and is requested at runtime only when the user
-      opens the voice screen. Notifications arrive in Phase 7. Never request
-      contacts, location, SMS, or unnecessary storage access.
-    -->
+    <!-- Permissions are added only when the feature that needs them exists. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".LeftApplication"
@@ -20,12 +15,6 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
         android:theme="@style/Theme.Left">
-
-        <!--
-          allowBackup=false: financial data must not silently leave the device
-          via platform auto-backup. Explicit, user-controlled backup/restore is
-          planned for Phase 9 (see ARCHITECTURE.md "Decisions").
-        -->
 
         <activity
             android:name=".MainActivity"

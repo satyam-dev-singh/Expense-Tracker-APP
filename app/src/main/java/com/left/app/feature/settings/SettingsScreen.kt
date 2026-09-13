@@ -9,48 +9,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.left.app.core.designsystem.component.LeftCard
 import com.left.app.core.designsystem.theme.LeftTheme
 
-/**
- * S15 Settings placeholder. The sections below map to the UX/UI Spec and are
- * implemented in their own phases (profile/currency in Phase 2, categories in
- * Phase 3, notifications in Phase 7, export in later phases).
- */
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(onSubscriptions: () -> Unit = {}, modifier: Modifier = Modifier) {
     val spacing = LeftTheme.spacing
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(spacing.md),
-    ) {
+    Column(modifier = modifier.fillMaxSize().padding(spacing.md)) {
         Spacer(modifier = Modifier.height(spacing.lg))
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
+        Text("Settings", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(spacing.lg))
-
-        listOf(
-            "Profile" to "Phase 2",
-            "Currency" to "Phase 2",
-            "Categories" to "Phase 3",
-            "Notifications" to "Phase 7",
-            "Data export" to "Later",
-            "About" to "Later",
-        ).forEach { (section, phase) ->
-            Text(
-                text = section,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = "Arrives in $phase",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(modifier = Modifier.height(spacing.md))
+        LeftCard(onClick = onSubscriptions) {
+            Column(modifier = Modifier.padding(spacing.md)) {
+                Text("Subscriptions & reminders", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                Text("Manage recurring spends and renewal nudges", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
+        Spacer(modifier = Modifier.height(spacing.md))
+        listOf("Profile" to "Phase 2", "Currency" to "Phase 2", "Categories" to "Phase 3", "Data export" to "Later", "About" to "Later").forEach { (section, phase) -> Text(section, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface); Text("Arrives in $phase", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant); Spacer(modifier = Modifier.height(spacing.md)) }
     }
 }
