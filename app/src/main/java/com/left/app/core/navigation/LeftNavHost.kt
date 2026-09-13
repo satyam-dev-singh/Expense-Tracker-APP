@@ -24,6 +24,7 @@ import androidx.navigation.navArgument
 import com.left.app.R
 import com.left.app.core.designsystem.LeftIcons
 import com.left.app.feature.analytics.AnalyticsScreen
+import com.left.app.feature.budgets.BudgetScreen
 import com.left.app.feature.dashboard.DashboardScreen
 import com.left.app.feature.onboarding.OnboardingScreen
 import com.left.app.feature.settings.SettingsScreen
@@ -35,7 +36,8 @@ import com.left.app.feature.transactions.TransactionsScreen
 
 /**
  * All app routes. Phase 3 wires Dashboard, Transactions, AddTransaction and
- * TransactionDetail for real; Analytics/Settings remain phased placeholders.
+ * TransactionDetail for real; Phase 4 adds Budgets; Analytics/Settings remain
+ * phased placeholders.
  */
 sealed class LeftDestination(val route: String) {
     data object Splash : LeftDestination("splash")
@@ -46,6 +48,7 @@ sealed class LeftDestination(val route: String) {
     data object TransactionDetail : LeftDestination("transactions/detail/{transactionId}") {
         fun routeFor(id: String): String = "transactions/detail/$id"
     }
+    data object Budgets : LeftDestination("budgets")
     data object Analytics : LeftDestination("analytics")
     data object Settings : LeftDestination("settings")
 }
@@ -65,7 +68,7 @@ private enum class TopLevelDestination(
 /**
  * Navigation framework. Renders the bottom navigation bar and the prominent
  * centered Add action only on top-level destinations; Splash, Onboarding,
- * AddTransaction and TransactionDetail display without chrome.
+ * AddTransaction, TransactionDetail and Budgets display without chrome.
  */
 @Composable
 fun LeftNavHost(
@@ -150,6 +153,7 @@ fun LeftNavHost(
                     onTransactionClick = { id ->
                         navController.navigate(LeftDestination.TransactionDetail.routeFor(id))
                     },
+                    onManageBudgets = { navController.navigate(LeftDestination.Budgets.route) },
                 )
             }
             composable(LeftDestination.Transactions.route) {
@@ -170,6 +174,9 @@ fun LeftNavHost(
             }
             composable(LeftDestination.AddTransaction.route) {
                 AddTransactionScreen(onBack = { navController.popBackStack() })
+            }
+            composable(LeftDestination.Budgets.route) {
+                BudgetScreen(onBack = { navController.popBackStack() })
             }
             composable(LeftDestination.Analytics.route) {
                 AnalyticsScreen()
