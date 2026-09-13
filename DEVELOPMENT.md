@@ -48,6 +48,8 @@ app/src/test/          JVM unit tests (JUnit4 + kotlinx-coroutines-test)
   feature/transactions/TransactionsViewModelTest.kt   (search/filters/month/groups)
   feature/transactions/AddTransactionViewModelTest.kt
   feature/transactions/TransactionDetailViewModelTest.kt
+  core/domain/BudgetUseCasesTest.kt             (Phase 4: allowance + thresholds)
+  feature/budgets/BudgetViewModelTest.kt        (Phase 4: rollover prefill, save/clear)
 
 app/src/androidTest/   instrumented tests (AndroidX Test, real in-memory Room)
   core/database/TransactionDaoTest.kt
@@ -58,7 +60,7 @@ Use cases take a `java.time.Clock` — tests inject `Clock.fixed(...)` so month
 boundaries, leap days and timezones are deterministic. Add new repository
 methods to the fakes as well.
 
-## Security checklist (Phase 0–3 posture)
+## Security checklist (Phase 0–4 posture)
 
 - No runtime permissions requested. Microphone arrives with voice (Phase 5).
 - No API keys in source. If a future phase needs one: `local.properties` +
@@ -84,6 +86,9 @@ there. What was verified in-sandbox:
 - Phase 3: `verification/TransactionsHarness.java` mirrors list/detail rules
   (day-group labels, inclusive amount-range predicates, search-vs-month
   decision, edit-prefill format→parse round-trip) — 24/24 assertions pass.
+- Phase 4: `verification/BudgetHarness.java` mirrors budget pacing rules
+  (80/100% thresholds, daily allowance incl. leap months + clamps, rollover
+  prefill decisions) — 19/19 assertions pass.
 
 **First thing to do on a machine with Android Studio / network:**
 
@@ -104,6 +109,7 @@ fix: parse amounts like "Rs. 10" without treating stray dot as decimal
 docs: add progress_so_far.txt (built vs remaining phases)
 feat: phase 2 onboarding flow
 feat: phase 3 core transaction experience
+feat: phase 4 budgeting
 ```
 
 Do not commit `local.properties`, keystores, or generated credentials.

@@ -1,6 +1,6 @@
 ================================================================================
 LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
-Last updated: 2026-09-13 (after Phase 3 — Core Transaction Experience)
+Last updated: 2026-09-13 (after Phase 4 — Budgeting)
 Repo: https://github.com/satyam-dev-singh/Expense-Tracker-APP (branch main)
 ================================================================================
 
@@ -9,8 +9,8 @@ WHAT IS BUILT (DONE)
 PHASE 0 — PROJECT FOUNDATION
 [✓] Gradle project (Kotlin 2.0.21, AGP 8.7.3, Compose M3, KSP), version catalog,
     wrapper config, debug/release types, ProGuard rules, GitHub Actions CI
-[✓] Package structure core/ + feature/, Hilt DI (5 modules), navigation
-    skeleton (7 routes + detail route), splash routing via DataStore flag
+[✓] Package structure core/ + feature/, Hilt DI (6 modules), navigation
+    skeleton (8 routes incl. detail + budgets), splash routing via DataStore flag
 [✓] Design system: original spruce palette, typography (moneyHero 44sp),
     tokens, buttons/fields/card, LeftIcons conventions
 [✓] Manifest: zero runtime permissions, allowBackup=false, cleartextTraffic=false
@@ -37,34 +37,42 @@ PHASE 2 — ONBOARDING
 
 PHASE 3 — CORE TRANSACTION EXPERIENCE
 [✓] Dashboard (FR-02): money-left hero (income − expenses), income/spent row,
-    budget context card (remaining + usage % + progress), recent 5 (tappable),
-    quick add — reactive Flow combine, UiState loading/error, currency from
-    profile; budget remaining NEVER conflated with money left (§15)
-[✓] Add transaction (FR-03/S07): amount-first form, expense/income segmented
-    toggle, category chips (toggle to clear), merchant/note (blank → null),
-    Material date picker (UTC-day mapping), recurring flag, inline errors,
-    double-tap guard, saves via AddTransaction use case (source=MANUAL)
-[✓] Transactions list (FR-11/S10): month navigation (year-rollover safe),
-    text search across all time via escaped DAO LIKE, type/category/amount-range
-    filters, day grouping (Today/Yesterday/date), friendly empty states
-[✓] Transaction detail (S09): view mode (hero amount + full record), in-place
-    edit via shared TransactionFormFields (prefill format→parse round-trips
-    exactly), delete with confirmation dialog; edit never clobbers in-progress
-    edits when the row stream re-emits
+    budget context, recent 5 (tappable), quick add — reactive, UiState pattern
+[✓] Add transaction (FR-03/S07): amount-first form, segmented expense/income,
+    category chips, merchant/note, date picker (UTC-day mapping), recurring flag,
+    inline errors, double-tap guard, saves via AddTransaction (source=MANUAL)
+[✓] Transactions list (FR-11/S10): month navigation, all-time text search
+    (escaped DAO LIKE), type/category/amount-range filters, day grouping
+    (Today/Yesterday/date), friendly empty states
+[✓] Transaction detail (S09): view + in-place edit (prefill format→parse
+    round-trips exactly) + delete with confirmation; streams never clobber edits
 [✓] Shared: TransactionRow, TransactionFormFields, budgetUsagePercentage
-    single-source helper (use case + ViewModels), nav route transactions/detail/{id}
-[✓] Tests: DashboardViewModelTest, TransactionsViewModelTest,
-    AddTransactionViewModelTest, TransactionDetailViewModelTest + shared
-    MainDispatcherRule (runTest reuses its scheduler, debounce covered)
-[✓] Verification: TransactionsHarness 24/24 PASSED (day labels, inclusive
-    range predicates, search decision, prefill round-trip, month rollover);
-    regressions 61/61 + 19/19 PASSED; structural 230/230 PASSED (90 Kotlin files)
+    single-source helper, nav route transactions/detail/{id}
+[✓] Tests: 4 ViewModel suites + shared MainDispatcherRule; harness 24/24 PASSED
+
+PHASE 4 — BUDGETING
+[✓] Budget domain (BudgetUseCases.kt): evaluateBudgetStatus (80% warn / 100%
+    exceeded), dailyAllowance pure fn (budget remaining ÷ days left including
+    today, integer floor, zero-clamped overspend, current-month only), and the
+    CalculateDailyAllowance use case over repositories + injected clock
+[✓] Dashboard: month navigation (year-rollover safe), pacing status line
+    (On track / Approaching budget limit / Over budget), daily allowance line
+    for the current month only, clickable budget card → Budgets, "Set a budget"
+    empty state
+[✓] Budgets screen (S14): total monthly budget (blank clears it), per-category
+    limits for all expense categories, per-category spent-this-month context,
+    month navigation with ROLLOVER prefill from the previous month (notice
+    shown, never silently saved), inline validation, save via repositories
+[✓] Tests: BudgetUseCasesTest (thresholds, allowance math incl. leap Feb, last
+    day, clamps, gating), BudgetViewModelTest (prefill, rollover, save/clear,
+    category limits, validation), DashboardViewModelTest extended (month nav,
+    allowance gating, status escalation)
+[✓] Verification: BudgetHarness 19/19 PASSED; regressions 61/61 + 19/19 +
+    24/24 PASSED; structural 241/241 PASSED (95 Kotlin files)
 
 WHAT IS LEFT TO BUILD (NOT STARTED)
 --------------------------------------------------------------------------------
-[ ] PHASE 4 — BUDGETING (NEXT): total + category budgets UI, progress/warning
-    thresholds, daily allowance, month rollover on dashboard
-[ ] PHASE 5 — VOICE: mic permission, SpeechRecognizer, rule-based parser,
+[ ] PHASE 5 — VOICE (NEXT): mic permission, SpeechRecognizer, rule-based parser,
     category matching, confirmation screen, duplicate protection
 [ ] PHASE 6 — ANALYTICS: category distribution, trends, month comparison
 [ ] PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS: CRUD UI, renewal calc,

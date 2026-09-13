@@ -123,6 +123,13 @@ REQUIRED = [
     "app/src/test/java/com/left/app/feature/transactions/AddTransactionViewModelTest.kt",
     "app/src/test/java/com/left/app/feature/transactions/TransactionDetailViewModelTest.kt",
     "verification/TransactionsHarness.java",
+    # Phase 4 — budgeting
+    "app/src/main/java/com/left/app/core/domain/BudgetUseCases.kt",
+    "app/src/main/java/com/left/app/feature/budgets/BudgetViewModel.kt",
+    "app/src/main/java/com/left/app/feature/budgets/BudgetScreen.kt",
+    "app/src/test/java/com/left/app/core/domain/BudgetUseCasesTest.kt",
+    "app/src/test/java/com/left/app/feature/budgets/BudgetViewModelTest.kt",
+    "verification/BudgetHarness.java",
 ]
 for rel in REQUIRED:
     check(f"file exists: {rel}", os.path.isfile(os.path.join(ROOT, rel)))
