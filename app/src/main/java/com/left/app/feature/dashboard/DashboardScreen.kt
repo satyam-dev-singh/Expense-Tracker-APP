@@ -1,5 +1,6 @@
 package com.left.app.feature.dashboard
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,16 +25,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.left.app.core.designsystem.LeftIcons
 import com.left.app.core.designsystem.component.LeftCard
 import com.left.app.core.designsystem.component.LeftPrimaryButton
+import com.left.app.core.designsystem.component.LeftTonalButton
 import com.left.app.core.designsystem.moneyHero
 import com.left.app.core.designsystem.theme.LeftTheme
+import com.left.app.core.domain.BudgetStatus
 import com.left.app.feature.transactions.TransactionRow
 import java.util.Locale
 
 /**
- * S06 Dashboard (PRD FR-02). Locked visual hierarchy (Master Prompt §8):
+ * S06 Dashboard (PRD FR-02 + FR-06). Locked visual hierarchy (Master Prompt §8):
  *
  *     MONEY LEFT  (actual: income − expenses)
- *     ↓ spending / budget context
+ *     ↓ spending / budget context (pace status + daily allowance)
  *     ↓ recent activity
  *     ↓ quick action
  *
@@ -43,6 +48,7 @@ import java.util.Locale
 fun DashboardScreen(
     onAddTransaction: () -> Unit,
     onTransactionClick: (String) -> Unit,
+    onManageBudgets: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
@@ -55,7 +61,7 @@ fun DashboardScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = spacing.md),
     ) {
-        Spacer(modifier = Modifier.height(spacing.xl))
+        Spacer(modifier = Modifier.height(spacing.lg))
 
         if (state.error != null) {
             Text(
@@ -66,13 +72,27 @@ fun DashboardScreen(
             return@Column
         }
 
+        // Month navigation (Phase 4 rollover).
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            IconButton(onClick = viewModel::onPreviousMonth) {
+                Icon(imageVector = LeftIcons.Previous, contentDescription = "Previous month")
+            }
+            Text(
+                text = state.monthLabel,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            IconButton(onClick = viewModel::onNextMonth) {
+                Icon(imageVector = LeftIcons.Next, contentDescription = "Next month")
+            }
+        }
+
         // 1. MONEY LEFT — the hero number.
-        Text(
-            text = state.monthLabel,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(modifier = Modifier.height(spacing.xs))
+        Spacer(modifier = Modifier.height(spacing.sm))
         Text(
             text = if (state.loading) "…" else state.moneyLeft.format(state.currencyCode),
             style = MaterialTheme.typography.moneyHero,
@@ -90,8 +110,8 @@ fun DashboardScreen(
 
         Spacer(modifier = Modifier.height(spacing.lg))
 
-        // 2. SPENDING / BUDGET CONTEXT
-        LeftCard(modifier = Modifier.fillMaxWidth()) {
+        // 2. SPENDING / BUDGET CONTEXT (tap to manage budgets).
+        LeftCard(modifier = Modifier.fillMaxWidth(), onClick = onManageBudgets) {
             Column(modifier = Modifier.padding(spacing.md)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -146,6 +166,38 @@ fun DashboardScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                    state.budgetStatus?.let { status ->
+                        Text(
+                            text = when (status) {
+                                BudgetStatus.ON_TRACK -> "On track"
+                                BudgetStatus.WARNING -> "Approaching budget limit"
+                                BudgetStatus.EXCEEDED -> "Over budget"
+                            },
+                            style = MaterialTheme.typography.labelMedium,
+                            color = when (status) {
+                                BudgetStatus.ON_TRACK -> MaterialTheme.colorScheme.onSurfaceVariant
+                                BudgetStatus.WARNING -> LeftTheme.extendedColors.warning
+                                BudgetStatus.EXCEEDED -> MaterialTheme.colorScheme.error
+                            },
+                        )
+                    }
+                    state.dailyAllowance?.let { allowance ->
+                        Spacer(modifier = Modifier.height(spacing.xs))
+                        Text(
+                            text = "Safe to spend about ${allowance.format(state.currencyCode)} per day for the rest of this month.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                } else if (!state.loading) {
+                    Spacer(modifier = Modifier.height(spacing.md))
+                    Text(
+                        text = "No budget set for ${state.monthLabel}.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.height(spacing.xs))
+                    LeftTonalButton(text = "Set a budget", onClick = onManageBudgets)
                 }
             }
         }
