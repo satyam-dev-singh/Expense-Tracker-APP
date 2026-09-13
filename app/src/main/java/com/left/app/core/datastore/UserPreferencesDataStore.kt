@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class UserPreferencesDataStore @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-) {
+) : OnboardingPreferences {
     val onboardingCompleted: Flow<Boolean> = dataStore.data
         .map { preferences -> preferences[Keys.ONBOARDING_COMPLETED] ?: false }
         .distinctUntilChanged()
@@ -30,11 +30,11 @@ class UserPreferencesDataStore @Inject constructor(
         .map { preferences -> preferences[Keys.DEFAULT_CURRENCY_CODE] }
         .distinctUntilChanged()
 
-    suspend fun setOnboardingCompleted(completed: Boolean) {
+    override suspend fun setOnboardingCompleted(completed: Boolean) {
         dataStore.edit { preferences -> preferences[Keys.ONBOARDING_COMPLETED] = completed }
     }
 
-    suspend fun setDefaultCurrencyCode(code: String) {
+    override suspend fun setDefaultCurrencyCode(code: String) {
         dataStore.edit { preferences -> preferences[Keys.DEFAULT_CURRENCY_CODE] = code }
     }
 
