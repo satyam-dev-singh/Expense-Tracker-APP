@@ -43,6 +43,11 @@ app/src/test/          JVM unit tests (JUnit4 + kotlinx-coroutines-test)
   feature/onboarding/OnboardingViewModelTest.kt (Phase 2: step flow state machine)
   core/data/fake/FakeRepositories.kt          (shared test doubles)
   core/data/fake/FakeOnboardingRepositories.kt (onboarding fakes + event ordering)
+  testutil/MainDispatcherRule.kt               (ViewModels on the JVM)
+  feature/dashboard/DashboardViewModelTest.kt
+  feature/transactions/TransactionsViewModelTest.kt   (search/filters/month/groups)
+  feature/transactions/AddTransactionViewModelTest.kt
+  feature/transactions/TransactionDetailViewModelTest.kt
 
 app/src/androidTest/   instrumented tests (AndroidX Test, real in-memory Room)
   core/database/TransactionDaoTest.kt
@@ -53,7 +58,7 @@ Use cases take a `java.time.Clock` — tests inject `Clock.fixed(...)` so month
 boundaries, leap days and timezones are deterministic. Add new repository
 methods to the fakes as well.
 
-## Security checklist (Phase 0–2 posture)
+## Security checklist (Phase 0–3 posture)
 
 - No runtime permissions requested. Microphone arrives with voice (Phase 5).
 - No API keys in source. If a future phase needs one: `local.properties` +
@@ -76,6 +81,9 @@ there. What was verified in-sandbox:
 - Phase 2: `verification/OnboardingHarness.java` mirrors the onboarding
   completion rules (validation, skip semantics, flag-last write ordering,
   next-occurrence date math) — 19/19 assertions pass.
+- Phase 3: `verification/TransactionsHarness.java` mirrors list/detail rules
+  (day-group labels, inclusive amount-range predicates, search-vs-month
+  decision, edit-prefill format→parse round-trip) — 24/24 assertions pass.
 
 **First thing to do on a machine with Android Studio / network:**
 
@@ -95,6 +103,7 @@ feat: initialize Android architecture and local finance data layer
 fix: parse amounts like "Rs. 10" without treating stray dot as decimal
 docs: add progress_so_far.txt (built vs remaining phases)
 feat: phase 2 onboarding flow
+feat: phase 3 core transaction experience
 ```
 
 Do not commit `local.properties`, keystores, or generated credentials.

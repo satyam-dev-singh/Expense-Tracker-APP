@@ -109,6 +109,20 @@ REQUIRED = [
     "app/src/test/java/com/left/app/core/data/fake/FakeOnboardingRepositories.kt",
     "app/src/test/java/com/left/app/feature/onboarding/OnboardingViewModelTest.kt",
     "verification/OnboardingHarness.java",
+    # Phase 3 — core transaction experience
+    "app/src/main/java/com/left/app/feature/dashboard/DashboardViewModel.kt",
+    "app/src/main/java/com/left/app/feature/transactions/TransactionRow.kt",
+    "app/src/main/java/com/left/app/feature/transactions/TransactionsViewModel.kt",
+    "app/src/main/java/com/left/app/feature/transactions/AddTransactionViewModel.kt",
+    "app/src/main/java/com/left/app/feature/transactions/TransactionDetailViewModel.kt",
+    "app/src/main/java/com/left/app/feature/transactions/TransactionDetailScreen.kt",
+    "app/src/main/java/com/left/app/feature/transactions/TransactionFormFields.kt",
+    "app/src/test/java/com/left/app/testutil/MainDispatcherRule.kt",
+    "app/src/test/java/com/left/app/feature/dashboard/DashboardViewModelTest.kt",
+    "app/src/test/java/com/left/app/feature/transactions/TransactionsViewModelTest.kt",
+    "app/src/test/java/com/left/app/feature/transactions/AddTransactionViewModelTest.kt",
+    "app/src/test/java/com/left/app/feature/transactions/TransactionDetailViewModelTest.kt",
+    "verification/TransactionsHarness.java",
 ]
 for rel in REQUIRED:
     check(f"file exists: {rel}", os.path.isfile(os.path.join(ROOT, rel)))
@@ -123,8 +137,9 @@ for dirpath, _, files in os.walk(ROOT):
             except ET.ParseError as e:
                 check(f"xml well-formed: {os.path.relpath(path, ROOT)} ({e})", False)
 
+# Derived display percentages only — never money storage (PRD §10).
+ALLOWED_DOUBLE_FILES = {"CalculationUseCases.kt", "MonthlyBudget.kt"}
 MONEY_SCAN_DIRS = ["core/database", "core/model", "core/data", "core/utils"]
-ALLOWED_DOUBLE_FILES = {"CalculationUseCases.kt"}  # derived percentage only
 for sub in MONEY_SCAN_DIRS:
     base = os.path.join(ROOT, "app/src/main/java/com/left/app", sub)
     for dirpath, _, files in os.walk(base):
