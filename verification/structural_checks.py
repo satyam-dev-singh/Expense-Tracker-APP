@@ -98,6 +98,17 @@ REQUIRED = [
     "app/src/test/java/com/left/app/core/data/fake/FakeRepositories.kt",
     "app/src/androidTest/java/com/left/app/core/database/TransactionDaoTest.kt",
     "app/src/androidTest/java/com/left/app/core/database/DatabaseSeedTest.kt",
+    # Phase 2 — onboarding
+    "app/src/main/java/com/left/app/core/domain/OnboardingUseCases.kt",
+    "app/src/main/java/com/left/app/core/datastore/OnboardingPreferences.kt",
+    "app/src/main/java/com/left/app/core/di/OnboardingPreferencesModule.kt",
+    "app/src/main/java/com/left/app/feature/onboarding/OnboardingViewModel.kt",
+    "app/src/main/java/com/left/app/feature/onboarding/OnboardingScreen.kt",
+    "app/src/main/java/com/left/app/feature/onboarding/OnboardingSteps.kt",
+    "app/src/test/java/com/left/app/core/domain/CompleteOnboardingTest.kt",
+    "app/src/test/java/com/left/app/core/data/fake/FakeOnboardingRepositories.kt",
+    "app/src/test/java/com/left/app/feature/onboarding/OnboardingViewModelTest.kt",
+    "verification/OnboardingHarness.java",
 ]
 for rel in REQUIRED:
     check(f"file exists: {rel}", os.path.isfile(os.path.join(ROOT, rel)))

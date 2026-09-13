@@ -39,7 +39,10 @@ app/src/test/          JVM unit tests (JUnit4 + kotlinx-coroutines-test)
   core/domain/TransactionUseCasesTest.kt      (against in-memory fakes)
   core/domain/CalculationUseCasesTest.kt      (PRD §19 scenarios)
   core/database/seed/DefaultCategoriesTest.kt
+  core/domain/CompleteOnboardingTest.kt        (Phase 2: ordering/skip/validation)
+  feature/onboarding/OnboardingViewModelTest.kt (Phase 2: step flow state machine)
   core/data/fake/FakeRepositories.kt          (shared test doubles)
+  core/data/fake/FakeOnboardingRepositories.kt (onboarding fakes + event ordering)
 
 app/src/androidTest/   instrumented tests (AndroidX Test, real in-memory Room)
   core/database/TransactionDaoTest.kt
@@ -50,7 +53,7 @@ Use cases take a `java.time.Clock` — tests inject `Clock.fixed(...)` so month
 boundaries, leap days and timezones are deterministic. Add new repository
 methods to the fakes as well.
 
-## Security checklist (Phase 0–1 posture)
+## Security checklist (Phase 0–2 posture)
 
 - No runtime permissions requested. Microphone arrives with voice (Phase 5).
 - No API keys in source. If a future phase needs one: `local.properties` +
@@ -70,6 +73,9 @@ there. What was verified in-sandbox:
   PRD §19 scenarios pass (see `verification/` notes in the session report).
 - Structural checks: all required files present, XML well-formed, no
   Float/Double money fields, full DAO capability coverage.
+- Phase 2: `verification/OnboardingHarness.java` mirrors the onboarding
+  completion rules (validation, skip semantics, flag-last write ordering,
+  next-occurrence date math) — 19/19 assertions pass.
 
 **First thing to do on a machine with Android Studio / network:**
 
@@ -82,10 +88,13 @@ CI (.github/workflows/android-ci.yml) runs the same on every push/PR.
 
 ## Git
 
-Checkpoint commit for this phase:
+Checkpoint commits so far:
 
 ```text
 feat: initialize Android architecture and local finance data layer
+fix: parse amounts like "Rs. 10" without treating stray dot as decimal
+docs: add progress_so_far.txt (built vs remaining phases)
+feat: phase 2 onboarding flow
 ```
 
 Do not commit `local.properties`, keystores, or generated credentials.

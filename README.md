@@ -55,8 +55,9 @@ UI never touches DAOs; money is never Float/Double (integer minor units via the 
 | --- | --- |
 | **Phase 0 — Foundation** | ✅ Gradle/Compose/Hilt/Room/DataStore config, package structure, navigation skeleton (Splash, Onboarding, Home, Transactions, AddTransaction, Analytics, Settings), centralized design system |
 | **Phase 1 — Local data layer** | ✅ 6 entities, 6 DAOs, 6 repositories, 11 use cases, Money value object, month engine, default-category seeding, unit + instrumented tests |
-| Phase 2 — Onboarding | ⬜ next up (not started) |
-| Phases 3–12 | ⬜ intentionally not started |
+| **Phase 2 — Onboarding** | ✅ Five-step flow (welcome → currency → income → budget → categories) persisting profile, current-month budget, recurring income, category prefs + completion flag; validation-before-write, flag-last ordering, ViewModel + use-case tests |
+| Phase 3 — Core transactions | ⬜ next up (not started) |
+| Phases 4–12 | ⬜ intentionally not started |
 
 ## Documentation
 

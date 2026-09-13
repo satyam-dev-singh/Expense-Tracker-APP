@@ -1,74 +1,73 @@
 ================================================================================
 LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
-Last updated: 2026-09-13 (checkpoint: feat initialize Android architecture and local finance data layer)
+Last updated: 2026-09-13 (after Phase 2 — Onboarding)
+Repo: https://github.com/satyam-dev-singh/Expense-Tracker-APP (branch main)
 ================================================================================
 
 WHAT IS BUILT (DONE)
 --------------------------------------------------------------------------------
 PHASE 0 — PROJECT FOUNDATION
 [✓] Gradle project: Kotlin 2.0.21, AGP 8.7.3, KSP, Jetpack Compose + Material 3,
-    version catalog (gradle/libs.versions.toml), Gradle 8.11.1 wrapper config,
-    debug/release build types (debug = com.left.app.debug), ProGuard rules
+    version catalog, Gradle 8.11.1 wrapper config, debug/release build types,
+    ProGuard rules, GitHub Actions CI (lint + unit tests + assembleDebug)
 [✓] Package structure: com.left.app → core/ (common, data, database, datastore,
     designsystem, di, domain, model, navigation, network, security, utils)
     + feature/ (splash, onboarding, dashboard, transactions, analytics, settings)
-[✓] Hilt dependency injection: AppModule (Clock, application scope), DatabaseModule,
-    DataStoreModule, RepositoryModule (interface→Room bindings)
+[✓] Hilt DI: AppModule (Clock, app scope), DatabaseModule, DataStoreModule,
+    RepositoryModule, OnboardingPreferencesModule
 [✓] Navigation skeleton: Splash, Onboarding, Home, Transactions, AddTransaction,
-    Analytics, Settings + bottom nav (Home|Transactions|Analytics|Settings)
-    + centered Add FAB; Splash routes onboarding↔home via DataStore flag
+    Analytics, Settings + bottom nav + centered Add FAB; splash routes
+    onboarding↔home via the DataStore completion flag
 [✓] Design system: original spruce/neutral palette (light+dark), typography scale
-    (moneyHero 44sp), spacing/shape/elevation tokens, LeftPrimaryButton/
-    LeftTonalButton/LeftTextButton, LeftTextField/LeftAmountField, LeftCard,
-    LeftIcons icon-key conventions with safe fallback
-[✓] CI: GitHub Actions workflow (lint + unit tests + assembleDebug)
+    (moneyHero 44sp), spacing/shape/elevation tokens, buttons/fields/card,
+    LeftIcons conventions with safe fallback
 [✓] Manifest: zero runtime permissions, allowBackup=false, cleartextTraffic=false
 
 PHASE 1 — LOCAL DATA LAYER
-[✓] Room database left.db v1 (exportSchema → app/schemas, NO destructive fallback)
-[✓] Entities (6): UserProfile, Category, Transaction, Subscription, IncomeSource,
-    MonthlyBudget — TEXT ids, snake_case columns per DB spec
-[✓] DAOs (6): insert/update/delete/getById/getAll/getByMonth/getByDateRange/
-    getByCategory/search(escaped LIKE)/observeRecent/observeMonthlyTotals,
-    Flow-based reactive reads
-[✓] Repositories (6): domain interfaces + Room impls; UI never touches DAOs
-[✓] Use cases (11): Add/Update/Delete/Get/GetTransactions/GetMonthlyTransactions
-    + CalculateMonthlyIncome/Expenses/RemainingMoney/BudgetRemaining/
-    BudgetUsagePercentage — with PRD §18 validation (amount>0, ISO 4217 currency,
-    category must exist when set)
-[✓] Money value class: integer minor units only (₹100.50 = 10050 paise),
-    Math.addExact/subtractExact overflow safety, parse() with Indian/Western
-    grouping + currency symbols, rejects over-precise input
-[✓] MonthRange: half-open epoch-day ranges; correct Dec→Jan rollover, leap years,
-    month lengths, timezone-aware "current month" via injected Clock
-[✓] Default categories seeded idempotently (10 PRD categories, deterministic
-    default-* IDs + INSERT OR IGNORE)
-[✓] Data integrity: category FK onDelete=SET_NULL (history survives deletion),
-    archive-first categories, unique (year,month) budget index
-[✓] DataStore: onboarding flag + default currency preferences
-[✓] SafeLogger (no financial data in logs), UiState (Loading/Success/Empty/Error)
-[✓] Docs: README.md, ARCHITECTURE.md, DATABASE.md, DEVELOPMENT.md
+[✓] Room left.db v1: 6 entities, 6 DAOs (full §12 capability set, Flow reads),
+    6 repositories, 11 use cases, Money value class (integer minor units,
+    overflow-checked), MonthRange (half-open epoch-day ranges), idempotent
+    default-category seeding (deterministic IDs + INSERT OR IGNORE)
+[✓] Data integrity: category FK onDelete=SET_NULL, archive-first lifecycle,
+    unique (year,month) budget index, no destructive migration fallback
+[✓] DataStore: onboarding flag + default currency (OnboardingPreferences
+    contract for testability)
 [✓] Tests: 5 JVM test classes + fakes; 2 instrumented Room test classes
-[✓] Verification (offline sandbox, no Android SDK): JVM harness mirroring
-    Money/MonthRange/calculations 1:1 → 61/61 assertions PASSED; structural
-    suite → 186/186 checks PASSED; defect found+fixed: "Rs. 10" parse stray dot
+[✓] Verification: JVM harness 61/61 PASSED; structural 186/186 PASSED;
+    defect found+fixed: "Rs. 10" parse stray dot
+
+PHASE 2 — ONBOARDING
+[✓] Five-step flow: Welcome(name) → Currency → Income → Budget → Categories
+    (UX/UI Spec S02–S05, PRD FR-01) with progress indicator + back/skip
+[✓] CompleteOnboarding use case: validation BEFORE any write (blank name,
+    invalid ISO 4217 currency, non-positive amounts rejected), writes profile →
+    current-month budget → recurring income → category archives → flags, with
+    the completion flag ALWAYS LAST so failures never leave a half-onboarded app
+[✓] Skip semantics: income/budget steps optional; skipping clears inputs so
+    nothing is persisted; categories step archives deselected defaults
+[✓] OnboardingViewModel state machine (StateFlow, immutable state, double-finish
+    guard, SafeLogger on failure, user-safe error messages only)
+[✓] Currency step: common one-tap currencies + custom ISO code validation
+[✓] Income next-occurrence math per frequency (weekly/biweekly/monthly/
+    quarterly/yearly/one-time) with leap-safe java.time arithmetic
+[✓] Tests: CompleteOnboardingTest (ordering/skip/validation/frequency dates,
+    Dec-31 stays December), OnboardingViewModelTest (step flow, validation,
+    skip, completion, double-finish), new fakes with shared event recorder
+[✓] Verification: OnboardingHarness 19/19 PASSED (JVM mirror of the rules)
 
 WHAT IS LEFT TO BUILD (NOT STARTED)
 --------------------------------------------------------------------------------
-[ ] PHASE 2 — ONBOARDING (NEXT): welcome → currency → income → budget →
-    categories → completion flag; clean install → configured Home
-[ ] PHASE 3 — CORE TRANSACTIONS: dashboard wiring (money left, income/spent,
-    recent list), amount-first add form, transaction list/detail, edit, delete,
-    search/filter
+[ ] PHASE 3 — CORE TRANSACTIONS (NEXT): dashboard wiring (money left,
+    income/spent, recent list), amount-first add form, transaction list/detail,
+    edit, delete, search/filter
 [ ] PHASE 4 — BUDGETING: total + category budgets, progress UI, warning
     thresholds, daily allowance, month rollover
 [ ] PHASE 5 — VOICE: mic permission, SpeechRecognizer, rule-based parser,
     category matching, confirmation screen, duplicate protection
-[ ] PHASE 6 — ANALYTICS: category distribution, trends, month comparison,
-    recurring totals
-[ ] PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS: subscription CRUD UI, renewal calc,
-    WorkManager reminders, budget alerts, weekly/monthly summaries
-[ ] PHASE 8 — ANDROID-NATIVE: widget, app shortcuts, QS tile, biometric lock
+[ ] PHASE 6 — ANALYTICS: category distribution, trends, month comparison
+[ ] PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS: CRUD UI, renewal calc,
+    WorkManager reminders, budget alerts, summaries
+[ ] PHASE 8 — ANDROID-NATIVE: widget, shortcuts, QS tile, biometric lock
 [ ] PHASE 9 — CLOUD (optional): auth, remote DB, sync engine, backup/restore
 [ ] PHASE 10 — AI: structured extraction, smart categorization, insights
 [ ] PHASE 11 — QA: UI tests, accessibility pass, offline + migration tests,
@@ -77,6 +76,6 @@ WHAT IS LEFT TO BUILD (NOT STARTED)
 
 IMMEDIATE NEXT STEP ON A DEV MACHINE
 --------------------------------------------------------------------------------
-    cd Left && ./gradlew lintDebug testDebugUnitTest assembleDebug
+    ./gradlew lintDebug testDebugUnitTest assembleDebug
 (First run downloads Gradle 8.11.1 + dependencies.)
 ================================================================================
