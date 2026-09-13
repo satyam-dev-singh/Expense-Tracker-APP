@@ -1,5 +1,5 @@
 LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
-Last updated: 2026-09-13 (after Phase 6 — Analytics)
+Last updated: 2026-09-13 (Phase 7 in progress — Subscriptions foundation)
 Repo: https://github.com/satyam-dev-singh/Expense-Tracker-APP (branch main)
 
 WHAT IS BUILT (DONE)
@@ -11,13 +11,20 @@ WHAT IS BUILT (DONE)
 - Phase 5 Voice: offline VoiceExpenseParser, SpeechRecognizer screen, permission gating, confirm-before-save, duplicate protection.
 - Phase 6 Analytics: real analytics screen and ViewModel with category distribution, 6-month trends, month-over-month comparison, recurring totals, words-first explanations, repository-only wiring, ViewModel tests, and AnalyticsHarness.
 
+PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS (IN PROGRESS)
+- Built subscription domain use cases: add/update/delete/toggle active, validation-before-write, renewal-date calculation, projected monthly amount.
+- Built subscriptions screen + ViewModel: add form, active list, pause/resume, delete, mark paid advances next billing date, projected monthly total, due-in-7-days reminder summary.
+- Wired subscriptions entry from Settings and added POST_NOTIFICATIONS manifest permission for Phase 7.
+- Added SubscriptionHarness and executed it in sandbox: 9/9 assertions passed.
+- Remaining Phase 7 work: production WorkManager notification worker/scheduler, notification runtime permission UX, budget-alert/summary notification polish, Android unit tests once compile environment is available.
+
 VERIFICATION
-- Existing harnesses remain: 61/61 money/month/calculation, 19/19 onboarding, 24/24 transactions, 19/19 budget, 31/31 voice.
-- New Phase 6 AnalyticsHarness executed in sandbox: 10/10 assertions passed.
+- Existing harnesses remain: 61/61 money/month/calculation, 19/19 onboarding, 24/24 transactions, 19/19 budget, 31/31 voice, 10/10 analytics.
+- New Phase 7 SubscriptionHarness executed in sandbox: 9/9 assertions passed.
 - Android Gradle/lint/build not executed in sandbox because there is no Android SDK/Gradle/network; run ./gradlew lintDebug testDebugUnitTest assembleDebug on a dev machine.
 
-WHAT IS LEFT TO BUILD (NOT STARTED)
-- Phase 7 — Subscriptions + notifications: CRUD UI, renewal calc, WorkManager reminders, budget alerts, summaries.
+WHAT IS LEFT TO BUILD (NOT STARTED / NOT COMPLETE)
+- Finish Phase 7 notifications: WorkManager reminders, budget alerts, summaries.
 - Phase 8 — Android-native: widget, shortcuts, QS tile, biometric lock.
 - Phase 9 — Cloud optional: auth, remote DB, sync engine, backup/restore.
 - Phase 10 — AI: structured extraction, smart categorization, insights.

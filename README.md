@@ -15,6 +15,7 @@ Fast expense/income capture, an immediately readable monthly position, simple bu
 | **Phase 4 — Budgeting** | ✅ Daily allowance + pacing status, budgets screen, per-category limits, rollover prefill |
 | **Phase 5 — Voice** | ✅ Rule-based offline parser, permission-gated capture, confirm-before-save, duplicate protection |
 | **Phase 6 — Analytics** | ✅ Words-first analytics screen with category distribution, 6-month trends, month-over-month comparison, recurring totals, ViewModel tests + JVM harness |
-| Phases 7–12 | ⬜ intentionally not started |
+| **Phase 7 — Subscriptions + notifications** | 🚧 Subscription CRUD foundation, renewal math, Settings entry, notification permission; WorkManager reminders/alerts still in progress |
+| Phases 8–12 | ⬜ intentionally not started |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md), [DATABASE.md](DATABASE.md), and [DEVELOPMENT.md](DEVELOPMENT.md).
