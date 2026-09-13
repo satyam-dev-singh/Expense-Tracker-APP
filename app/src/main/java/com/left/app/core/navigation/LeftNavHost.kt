@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.left.app.R
 import com.left.app.core.designsystem.LeftIcons
 import com.left.app.feature.analytics.AnalyticsScreen
@@ -28,11 +30,12 @@ import com.left.app.feature.settings.SettingsScreen
 import com.left.app.feature.splash.SplashRoute
 import com.left.app.feature.splash.SplashScreen
 import com.left.app.feature.transactions.AddTransactionScreen
+import com.left.app.feature.transactions.TransactionDetailScreen
 import com.left.app.feature.transactions.TransactionsScreen
 
 /**
- * All app routes. Placeholder destinations for Phase 0 (Master Prompt §7);
- * screens gain real functionality in their dedicated phases.
+ * All app routes. Phase 3 wires Dashboard, Transactions, AddTransaction and
+ * TransactionDetail for real; Analytics/Settings remain phased placeholders.
  */
 sealed class LeftDestination(val route: String) {
     data object Splash : LeftDestination("splash")
@@ -40,6 +43,9 @@ sealed class LeftDestination(val route: String) {
     data object Home : LeftDestination("home")
     data object Transactions : LeftDestination("transactions")
     data object AddTransaction : LeftDestination("transactions/add")
+    data object TransactionDetail : LeftDestination("transactions/detail/{transactionId}") {
+        fun routeFor(id: String): String = "transactions/detail/$id"
+    }
     data object Analytics : LeftDestination("analytics")
     data object Settings : LeftDestination("settings")
 }
@@ -58,8 +64,8 @@ private enum class TopLevelDestination(
 
 /**
  * Navigation framework. Renders the bottom navigation bar and the prominent
- * centered Add action only on top-level destinations; Splash, Onboarding and
- * AddTransaction display without chrome.
+ * centered Add action only on top-level destinations; Splash, Onboarding,
+ * AddTransaction and TransactionDetail display without chrome.
  */
 @Composable
 fun LeftNavHost(
@@ -141,10 +147,26 @@ fun LeftNavHost(
             composable(LeftDestination.Home.route) {
                 DashboardScreen(
                     onAddTransaction = { navController.navigate(LeftDestination.AddTransaction.route) },
+                    onTransactionClick = { id ->
+                        navController.navigate(LeftDestination.TransactionDetail.routeFor(id))
+                    },
                 )
             }
             composable(LeftDestination.Transactions.route) {
-                TransactionsScreen()
+                TransactionsScreen(
+                    onTransactionClick = { id ->
+                        navController.navigate(LeftDestination.TransactionDetail.routeFor(id))
+                    },
+                )
+            }
+            composable(
+                route = LeftDestination.TransactionDetail.route,
+                arguments = listOf(navArgument("transactionId") { type = NavType.StringType }),
+            ) { entry ->
+                TransactionDetailScreen(
+                    transactionId = entry.arguments?.getString("transactionId").orEmpty(),
+                    onBack = { navController.popBackStack() },
+                )
             }
             composable(LeftDestination.AddTransaction.route) {
                 AddTransactionScreen(onBack = { navController.popBackStack() })

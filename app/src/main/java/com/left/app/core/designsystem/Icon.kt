@@ -2,6 +2,8 @@ package com.left.app.core.designsystem
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.BarChart
@@ -37,6 +39,8 @@ object LeftIcons {
     val Transactions: ImageVector get() = Icons.AutoMirrored.Outlined.ReceiptLong
     val Analytics: ImageVector get() = Icons.Outlined.BarChart
     val Settings: ImageVector get() = Icons.Outlined.Settings
+    val Previous: ImageVector get() = Icons.AutoMirrored.Outlined.KeyboardArrowLeft
+    val Next: ImageVector get() = Icons.AutoMirrored.Outlined.KeyboardArrowRight
 
     /** Maps a Category.iconKey to a glyph; unknown keys fall back to [Category]. */
     fun category(iconKey: String): ImageVector = when (iconKey) {

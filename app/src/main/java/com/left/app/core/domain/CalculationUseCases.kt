@@ -2,9 +2,8 @@ package com.left.app.core.domain
 
 import com.left.app.core.data.MonthlyBudgetRepository
 import com.left.app.core.data.TransactionRepository
+import com.left.app.core.model.budgetUsagePercentage
 import com.left.app.core.utils.Money
-import java.math.BigDecimal
-import java.math.RoundingMode
 import javax.inject.Inject
 
 /**
@@ -14,8 +13,8 @@ import javax.inject.Inject
  *  - ACTUAL remaining  = income − expenses  ("Money left")
  *  - BUDGET remaining  = budget − expenses  ("Budget remaining")
  *
- * All money math is integer minor units via [Money]. Double appears only in
- * [CalculateBudgetUsagePercentage] as a derived display metric.
+ * All money math is integer minor units via [Money]. Double appears only as
+ * the derived budget-usage *percentage* display metric.
  */
 
 /** SUM(INCOME transactions) for the selected month. */
@@ -63,7 +62,8 @@ class CalculateBudgetRemaining @Inject constructor(
 
 /**
  * Percentage of the monthly budget already consumed (0–100+, 2-decimal
- * half-up rounding, e.g. 66.67).
+ * half-up rounding, e.g. 66.67). Delegates to the shared [budgetUsagePercentage]
+ * helper so ViewModels and this use case compute identically.
  *
  * @return null when no budget is configured or the budget is not positive.
  */
@@ -73,16 +73,7 @@ class CalculateBudgetUsagePercentage @Inject constructor(
 ) {
     suspend operator fun invoke(year: Int, month: Int): Double? {
         val budget = monthlyBudgetRepository.getBudget(year, month) ?: return null
-        if (!budget.totalLimit.isPositive) return null
         val expenses = transactionRepository.getMonthlyTotals(year, month).expenses
-        return BigDecimal(expenses.minorUnits)
-            .multiply(HUNDRED)
-            .divide(BigDecimal(budget.totalLimit.minorUnits), PERCENT_SCALE, RoundingMode.HALF_UP)
-            .toDouble()
-    }
-
-    private companion object {
-        val HUNDRED: BigDecimal = BigDecimal(100)
-        const val PERCENT_SCALE: Int = 2
+        return budgetUsagePercentage(expenses, budget.totalLimit)
     }
 }
