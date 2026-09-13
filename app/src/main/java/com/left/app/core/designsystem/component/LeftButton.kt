@@ -52,6 +52,7 @@ fun LeftTonalButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    leadingIcon: ImageVector? = null,
 ) {
     FilledTonalButton(
         onClick = onClick,
@@ -59,6 +60,14 @@ fun LeftTonalButton(
         enabled = enabled,
         shape = MaterialTheme.shapes.medium,
     ) {
+        if (leadingIcon != null) {
+            Icon(
+                imageVector = leadingIcon,
+                contentDescription = null, // the text label already describes the action
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(modifier = Modifier.width(LeftTheme.spacing.sm))
+        }
         Text(text = text, style = MaterialTheme.typography.labelLarge)
     }
 }

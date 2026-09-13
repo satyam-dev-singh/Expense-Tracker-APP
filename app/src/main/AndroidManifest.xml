@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Privacy-first (PRD §21 / Technical Architecture §7):
-      Phase 0–1 request ZERO runtime permissions. Microphone (voice) is added in
-      Phase 5 when the feature exists; notifications in Phase 7. Never request
+      Privacy-first (PRD §21 / Technical Architecture §7): permissions are added
+      only when the feature that needs them exists. RECORD_AUDIO powers the
+      Phase 5 voice quick entry and is requested at runtime only when the user
+      opens the voice screen. Notifications arrive in Phase 7. Never request
       contacts, location, SMS, or unnecessary storage access.
     -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".LeftApplication"

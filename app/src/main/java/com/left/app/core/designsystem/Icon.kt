@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.outlined.Flight
 import androidx.compose.material.icons.outlined.HealthAndSafety
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restaurant
@@ -39,6 +40,7 @@ object LeftIcons {
     val Transactions: ImageVector get() = Icons.AutoMirrored.Outlined.ReceiptLong
     val Analytics: ImageVector get() = Icons.Outlined.BarChart
     val Settings: ImageVector get() = Icons.Outlined.Settings
+    val Mic: ImageVector get() = Icons.Outlined.Mic
     val Previous: ImageVector get() = Icons.AutoMirrored.Outlined.KeyboardArrowLeft
     val Next: ImageVector get() = Icons.AutoMirrored.Outlined.KeyboardArrowRight
 
