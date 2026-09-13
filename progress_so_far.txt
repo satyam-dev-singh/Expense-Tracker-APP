@@ -1,96 +1,25 @@
-================================================================================
 LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
-Last updated: 2026-09-13 (after Phase 5 — Voice)
+Last updated: 2026-09-13 (after Phase 6 — Analytics)
 Repo: https://github.com/satyam-dev-singh/Expense-Tracker-APP (branch main)
-================================================================================
 
 WHAT IS BUILT (DONE)
---------------------------------------------------------------------------------
-PHASE 0 — PROJECT FOUNDATION
-[✓] Gradle project (Kotlin 2.0.21, AGP 8.7.3, Compose M3, KSP), version catalog,
-    wrapper config, debug/release types, ProGuard rules, GitHub Actions CI
-[✓] Package structure core/ + feature/, Hilt DI (6 modules), navigation
-    skeleton (9 routes incl. detail + budgets + voice), splash routing via
-    DataStore flag
-[✓] Design system: original spruce palette, typography (moneyHero 44sp),
-    tokens, buttons/fields/card, LeftIcons conventions
-[✓] Manifest: RECORD_AUDIO only (Phase 5 voice); allowBackup=false,
-    cleartextTraffic=false
+- Phase 0 Foundation: Kotlin/AGP/Compose/Hilt/Room/DataStore/Nav/WorkManager foundation, CI, design system, safe manifest posture.
+- Phase 1 Local data: Room left.db v1, 6 entities, 6 DAOs, repositories, use cases, Money value class, MonthRange, default-category seeding.
+- Phase 2 Onboarding: 5-step flow and CompleteOnboarding validation-before-write with completion flag written last.
+- Phase 3 Core transactions: dashboard, add form, transaction list/search/filter/grouping, detail edit/delete.
+- Phase 4 Budgeting: budget status, daily allowance, budgets screen, per-category limits, rollover prefill, dashboard month navigation.
+- Phase 5 Voice: offline VoiceExpenseParser, SpeechRecognizer screen, permission gating, confirm-before-save, duplicate protection.
+- Phase 6 Analytics: real analytics screen and ViewModel with category distribution, 6-month trends, month-over-month comparison, recurring totals, words-first explanations, repository-only wiring, ViewModel tests, and AnalyticsHarness.
 
-PHASE 1 — LOCAL DATA LAYER
-[✓] Room left.db v1: 6 entities, 6 DAOs (full §12 capability set, Flow reads),
-    6 repositories, 11 use cases, Money value class (integer minor units,
-    overflow-checked), MonthRange half-open epoch-day ranges, idempotent seeding
-[✓] Data integrity: category FK SET_NULL, archive-first, unique (year,month)
-    budget index, no destructive migration fallback
-[✓] Tests: 5 JVM classes + fakes; 2 instrumented Room classes
-[✓] Verification: harness 61/61; structural 186/186; defect fixed: "Rs. 10" parse
-
-PHASE 2 — ONBOARDING
-[✓] Five-step flow (Welcome → Currency → Income → Budget → Categories) with
-    progress indicator, back/skip, per-field inline validation
-[✓] CompleteOnboarding use case: validation BEFORE any write; completion flag
-    ALWAYS written LAST (safe retry on any failure)
-[✓] Skip semantics, category archiving, currency chips + custom ISO code,
-    leap-safe income next-occurrence math per frequency
-[✓] Tests: CompleteOnboardingTest + OnboardingViewModelTest; harness 19/19 PASSED
-
-PHASE 3 — CORE TRANSACTION EXPERIENCE
-[✓] Dashboard wired (money-left hero, budget context, recent 5, quick add)
-[✓] Add transaction: amount-first form, segmented type, category chips, date
-    picker, recurring flag, double-tap guard (source=MANUAL)
-[✓] Transactions list: month nav, all-time escaped-LIKE search, type/category/
-    amount-range filters, day grouping (Today/Yesterday/date)
-[✓] Detail: view + in-place edit + delete with confirmation
-[✓] Tests: 4 ViewModel suites; harness 24/24 PASSED
-
-PHASE 4 — BUDGETING
-[✓] BudgetUseCases: evaluateBudgetStatus (80% warn / 100% exceeded),
-    dailyAllowance (remaining ÷ days left incl. today, floor, zero-clamped,
-    current-month only), CalculateDailyAllowance use case
-[✓] Dashboard: month navigation, pacing status line, daily allowance line,
-    clickable budget card
-[✓] Budgets screen (S14): total budget (blank clears), per-category limits with
-    spent context, rollover prefill from previous month (never silently saved)
-[✓] Tests: BudgetUseCasesTest + BudgetViewModelTest + dashboard additions;
-    harness 19/19 PASSED
-
-PHASE 5 — VOICE
-[✓] VoiceExpenseParser (core/voice, pure rules, offline): amount token (symbols,
-    grouping, decimals), income keywords, ordered category keyword map over the
-    seeded defaults (name fallback), merchant phrase (trailing at/from/to, amount
-    stripped, title-cased), date words (yesterday / on-the-Nth with previous-month
-    rollover / named months with year rollback), NoAmount guidance path
-[✓] VoiceViewModel state machine: PERMISSION → LISTENING → CONFIRMING → SAVED /
-    ERROR; partial transcripts; confirmation with editable amount/type/category;
-    duplicate protection (draft signature, reset per listening round); VOICE
-    source on save via AddTransaction; SafeLogger-only failure logging
-[✓] VoiceCaptureScreen (S08): inline RECORD_AUDIO permission request (first
-    runtime permission in the app — requested only when the voice screen opens,
-    PRD §21), SpeechRecognizer lifecycle tied to the listening phase, graceful
-    fallbacks (denied / unavailable / unrecognized → guidance + "Type it instead")
-[✓] Entry points: dashboard "Voice" quick action next to Add expense; nav route
-    voice; type-instead hands off to the add form popping the voice screen
-[✓] Tests: VoiceExpenseParserTest (11 cases incl. merchant/amount collision,
-    leap dates, category coverage), VoiceViewModelTest (states, edits, VOICE
-    source, duplicate guard + reset); harness 31/31 PASSED
-[✓] Verification: regressions 61/61 + 19/19 + 24/24 + 19/19 PASSED; structural
-    252/252 PASSED (100 Kotlin files)
+VERIFICATION
+- Existing harnesses remain: 61/61 money/month/calculation, 19/19 onboarding, 24/24 transactions, 19/19 budget, 31/31 voice.
+- New Phase 6 AnalyticsHarness executed in sandbox: 10/10 assertions passed.
+- Android Gradle/lint/build not executed in sandbox because there is no Android SDK/Gradle/network; run ./gradlew lintDebug testDebugUnitTest assembleDebug on a dev machine.
 
 WHAT IS LEFT TO BUILD (NOT STARTED)
---------------------------------------------------------------------------------
-[ ] PHASE 6 — ANALYTICS (NEXT): category distribution, trends, month comparison
-[ ] PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS: CRUD UI, renewal calc,
-    WorkManager reminders, budget alerts, summaries
-[ ] PHASE 8 — ANDROID-NATIVE: widget, shortcuts, QS tile, biometric lock
-[ ] PHASE 9 — CLOUD (optional): auth, remote DB, sync engine, backup/restore
-[ ] PHASE 10 — AI: structured extraction, smart categorization, insights
-[ ] PHASE 11 — QA: UI tests, accessibility pass, offline + migration tests,
-    performance, security review
-[ ] PHASE 12 — RELEASE: signing, Play Console, privacy policy, store listing
-
-IMMEDIATE NEXT STEP ON A DEV MACHINE
---------------------------------------------------------------------------------
-    ./gradlew lintDebug testDebugUnitTest assembleDebug
-(First run downloads Gradle 8.11.1 + dependencies.)
-================================================================================
+- Phase 7 — Subscriptions + notifications: CRUD UI, renewal calc, WorkManager reminders, budget alerts, summaries.
+- Phase 8 — Android-native: widget, shortcuts, QS tile, biometric lock.
+- Phase 9 — Cloud optional: auth, remote DB, sync engine, backup/restore.
+- Phase 10 — AI: structured extraction, smart categorization, insights.
+- Phase 11 — QA: UI tests, accessibility, offline + migration tests, performance, security review.
+- Phase 12 — Release: signing, Play Console, privacy policy, store listing.

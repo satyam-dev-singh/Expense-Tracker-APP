@@ -2,68 +2,19 @@
 
 An original, minimalist Android app built around one question: **"How much money do I have left?"**
 
-Fast expense/income capture, an immediately readable monthly position, simple budgets, and subscription tracking — local-first and privacy-first. This is an independent Android implementation: all code, branding, design tokens, and copy are original (see the project documentation pack for context).
-
-## Tech stack
-
-| Area | Choice |
-| --- | --- |
-| Language | Kotlin |
-| UI | Jetpack Compose + Material 3 |
-| Architecture | MVVM + Clean Architecture, feature-oriented packages |
-| DI | Hilt |
-| Local storage | Room (source of truth) + DataStore (preferences) |
-| Async | Kotlin Coroutines + Flow |
-| Navigation | Navigation Compose |
-| Background | WorkManager (wired for later phases) |
-| Tests | JUnit 4, kotlinx-coroutines-test, AndroidX Test, Compose UI test |
-
-Minimum SDK 26 (Android 8.0) — native `java.time` without desugaring while keeping broad device coverage. Target/compile SDK 35.
-
-## Build & run
-
-Prerequisites: Android Studio (current stable) or JDK 17 + Android SDK 35.
-
-```bash
-./gradlew assembleDebug          # build debug APK
-./gradlew testDebugUnitTest      # unit tests
-./gradlew connectedDebugAndroidTest   # instrumented tests (device/emulator)
-./gradlew lintDebug              # static analysis
-```
-
-Debug builds use application id suffix `.debug` so they can sit next to a release install. See [DEVELOPMENT.md](DEVELOPMENT.md) for details.
-
-## Architecture
-
-```text
-Compose screens (feature/*)
-        ↓
-ViewModel (feature-scoped, from Phase 2/3 onward)
-        ↓
-Use cases (core/domain)
-        ↓
-Repository interfaces (core/data)
-        ↓
-Room / DataStore implementations (core/database, core/datastore)
-```
-
-UI never touches DAOs; money is never Float/Double (integer minor units via the `Money` value class); monthly filtering is exact epoch-day range math via `MonthRange`. See [ARCHITECTURE.md](ARCHITECTURE.md) and [DATABASE.md](DATABASE.md).
+Fast expense/income capture, an immediately readable monthly position, simple budgets, and subscription tracking — local-first and privacy-first.
 
 ## Current implementation status
 
 | Phase | Status |
 | --- | --- |
 | **Phase 0 — Foundation** | ✅ Gradle/Compose/Hilt/Room/DataStore config, package structure, navigation skeleton, centralized design system |
-| **Phase 1 — Local data layer** | ✅ 6 entities, 6 DAOs, 6 repositories, 11 use cases, Money value object, month engine, default-category seeding, unit + instrumented tests |
-| **Phase 2 — Onboarding** | ✅ Five-step flow (welcome → currency → income → budget → categories) persisting profile, budget, income, category prefs + completion flag |
-| **Phase 3 — Core transactions** | ✅ Dashboard wired, amount-first add form, list with search/filters/month nav/day groups, detail with edit + delete, 4 ViewModel test suites |
-| **Phase 4 — Budgeting** | ✅ Daily allowance + pacing status (80/100% thresholds), budgets screen with per-category limits + rollover prefill, dashboard month navigation |
-| **Phase 5 — Voice** | ✅ Rule-based offline parser (amount/type/category/merchant/date), permission-gated capture screen, confirm-before-save, duplicate protection, type-instead fallback |
-| Phase 6 — Analytics | ⬜ next up (not started) |
+| **Phase 1 — Local data layer** | ✅ 6 entities, 6 DAOs, repositories, use cases, Money value object, month engine, default-category seeding |
+| **Phase 2 — Onboarding** | ✅ Five-step flow persisting profile, budget, income, category prefs + completion flag |
+| **Phase 3 — Core transactions** | ✅ Dashboard wired, amount-first add form, list/search/filter/grouping, detail edit/delete |
+| **Phase 4 — Budgeting** | ✅ Daily allowance + pacing status, budgets screen, per-category limits, rollover prefill |
+| **Phase 5 — Voice** | ✅ Rule-based offline parser, permission-gated capture, confirm-before-save, duplicate protection |
+| **Phase 6 — Analytics** | ✅ Words-first analytics screen with category distribution, 6-month trends, month-over-month comparison, recurring totals, ViewModel tests + JVM harness |
 | Phases 7–12 | ⬜ intentionally not started |
 
-## Documentation
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) — layers, package map, engineering decisions
-- [DATABASE.md](DATABASE.md) — schema, relationships, indices, migration policy
-- [DEVELOPMENT.md](DEVELOPMENT.md) — setup, commands, testing, verification
+See [ARCHITECTURE.md](ARCHITECTURE.md), [DATABASE.md](DATABASE.md), and [DEVELOPMENT.md](DEVELOPMENT.md).
