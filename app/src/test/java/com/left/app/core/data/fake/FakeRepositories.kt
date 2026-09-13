@@ -100,6 +100,7 @@ class FakeTransactionRepository : TransactionRepository {
 
 class FakeCategoryRepository(
     private val clock: Clock = Clock.systemUTC(),
+    private val events: MutableList<String>? = null,
 ) : CategoryRepository {
 
     private val categories = MutableStateFlow<List<Category>>(emptyList())
@@ -141,6 +142,7 @@ class FakeCategoryRepository(
     }
 
     override suspend fun archive(id: String) {
+        events?.add("archive")
         categories.update { list -> list.map { if (it.id == id) it.copy(isArchived = true) else it } }
     }
 
@@ -149,6 +151,7 @@ class FakeCategoryRepository(
     }
 
     override suspend fun ensureDefaultCategories() {
+        events?.add("categories")
         val now = Instant.now(clock)
         categories.update { existing ->
             val missing = DefaultCategories.entities(now)
@@ -173,12 +176,14 @@ class FakeCategoryRepository(
 
 class FakeMonthlyBudgetRepository(
     private val clock: Clock = Clock.systemUTC(),
+    private val events: MutableList<String>? = null,
 ) : MonthlyBudgetRepository {
 
     private val budgets = MutableStateFlow<List<MonthlyBudget>>(emptyList())
 
     override suspend fun setBudget(year: Int, month: Int, totalLimit: Money): MonthlyBudget {
         MonthRange.of(year, month) // validates 1..12, mirroring the Room repository
+        events?.add("budget")
         val now = Instant.now(clock)
         val existing = budgets.value.firstOrNull { it.year == year && it.month == month }
         val budget = MonthlyBudget(
