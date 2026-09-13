@@ -38,7 +38,7 @@ import java.util.Locale
  *     MONEY LEFT  (actual: income − expenses)
  *     ↓ spending / budget context (pace status + daily allowance)
  *     ↓ recent activity
- *     ↓ quick action
+ *     ↓ quick action (manual or voice)
  *
  * Budget remaining is always labeled as such and never conflated with money
  * left (PRD §15). All values come from [DashboardViewModel]; this composable
@@ -49,6 +49,7 @@ fun DashboardScreen(
     onAddTransaction: () -> Unit,
     onTransactionClick: (String) -> Unit,
     onManageBudgets: () -> Unit,
+    onVoiceAdd: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
@@ -231,13 +232,21 @@ fun DashboardScreen(
 
         Spacer(modifier = Modifier.height(spacing.xl))
 
-        // 4. QUICK ACTION
-        LeftPrimaryButton(
-            text = "Add expense",
-            onClick = onAddTransaction,
-            modifier = Modifier.fillMaxWidth(),
-            leadingIcon = LeftIcons.Add,
-        )
+        // 4. QUICK ACTION (manual or voice, FR-03/FR-04)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            LeftPrimaryButton(
+                text = "Add expense",
+                onClick = onAddTransaction,
+                modifier = Modifier.weight(1f),
+                leadingIcon = LeftIcons.Add,
+            )
+            Spacer(modifier = Modifier.width(spacing.sm))
+            LeftTonalButton(
+                text = "Voice",
+                onClick = onVoiceAdd,
+                leadingIcon = LeftIcons.Mic,
+            )
+        }
         Spacer(modifier = Modifier.height(spacing.lg))
     }
 }

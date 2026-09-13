@@ -33,11 +33,12 @@ import com.left.app.feature.splash.SplashScreen
 import com.left.app.feature.transactions.AddTransactionScreen
 import com.left.app.feature.transactions.TransactionDetailScreen
 import com.left.app.feature.transactions.TransactionsScreen
+import com.left.app.feature.voice.VoiceCaptureScreen
 
 /**
  * All app routes. Phase 3 wires Dashboard, Transactions, AddTransaction and
- * TransactionDetail for real; Phase 4 adds Budgets; Analytics/Settings remain
- * phased placeholders.
+ * TransactionDetail; Phase 4 adds Budgets; Phase 5 adds Voice. Analytics and
+ * Settings remain phased placeholders.
  */
 sealed class LeftDestination(val route: String) {
     data object Splash : LeftDestination("splash")
@@ -49,6 +50,7 @@ sealed class LeftDestination(val route: String) {
         fun routeFor(id: String): String = "transactions/detail/$id"
     }
     data object Budgets : LeftDestination("budgets")
+    data object Voice : LeftDestination("voice")
     data object Analytics : LeftDestination("analytics")
     data object Settings : LeftDestination("settings")
 }
@@ -68,7 +70,7 @@ private enum class TopLevelDestination(
 /**
  * Navigation framework. Renders the bottom navigation bar and the prominent
  * centered Add action only on top-level destinations; Splash, Onboarding,
- * AddTransaction, TransactionDetail and Budgets display without chrome.
+ * AddTransaction, TransactionDetail, Budgets and Voice display without chrome.
  */
 @Composable
 fun LeftNavHost(
@@ -154,6 +156,7 @@ fun LeftNavHost(
                         navController.navigate(LeftDestination.TransactionDetail.routeFor(id))
                     },
                     onManageBudgets = { navController.navigate(LeftDestination.Budgets.route) },
+                    onVoiceAdd = { navController.navigate(LeftDestination.Voice.route) },
                 )
             }
             composable(LeftDestination.Transactions.route) {
@@ -177,6 +180,16 @@ fun LeftNavHost(
             }
             composable(LeftDestination.Budgets.route) {
                 BudgetScreen(onBack = { navController.popBackStack() })
+            }
+            composable(LeftDestination.Voice.route) {
+                VoiceCaptureScreen(
+                    onBack = { navController.popBackStack() },
+                    onTypeInstead = {
+                        navController.navigate(LeftDestination.AddTransaction.route) {
+                            popUpTo(LeftDestination.Voice.route) { inclusive = true }
+                        }
+                    },
+                )
             }
             composable(LeftDestination.Analytics.route) {
                 AnalyticsScreen()
