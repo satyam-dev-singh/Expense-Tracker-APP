@@ -1,28 +1,22 @@
 LEFT — SMART EXPENSE TRACKER : PROGRESS SO FAR
-Last updated: 2026-09-13 (Phase 7 in progress — Subscriptions + notification planning)
+Last updated: 2026-09-13 (after Phase 7 — Subscriptions + Notifications)
 Repo: https://github.com/satyam-dev-singh/Expense-Tracker-APP (branch main)
 
-WHAT IS BUILT (DONE)
-- Phase 0 Foundation: Kotlin/AGP/Compose/Hilt/Room/DataStore/Nav/WorkManager foundation, CI, design system, safe manifest posture.
-- Phase 1 Local data: Room left.db v1, 6 entities, 6 DAOs, repositories, use cases, Money value class, MonthRange, default-category seeding.
-- Phase 2 Onboarding: 5-step flow and CompleteOnboarding validation-before-write with completion flag written last.
-- Phase 3 Core transactions: dashboard, add form, transaction list/search/filter/grouping, detail edit/delete.
-- Phase 4 Budgeting: budget status, daily allowance, budgets screen, per-category limits, rollover prefill, dashboard month navigation.
-- Phase 5 Voice: offline VoiceExpenseParser, SpeechRecognizer screen, permission gating, confirm-before-save, duplicate protection.
-- Phase 6 Analytics: real analytics screen and ViewModel with category distribution, 6-month trends, month-over-month comparison, recurring totals, words-first explanations, repository-only wiring, ViewModel tests, and AnalyticsHarness.
+DONE: Phases 0–7.
 
-PHASE 7 — SUBSCRIPTIONS + NOTIFICATIONS (IN PROGRESS)
-- Built subscription domain use cases: add/update/delete/toggle active, validation-before-write, renewal-date calculation, projected monthly amount.
-- Built subscriptions screen + ViewModel: add form, active list, pause/resume, delete, mark paid advances next billing date, projected monthly total, due-in-7-days reminder summary.
-- Wired subscriptions entry from Settings and added POST_NOTIFICATIONS manifest permission for Phase 7.
-- Added pure notification planning rules for budget warning/exceeded and monthly summaries.
-- Verification: SubscriptionHarness 9/9 passed; Phase7NotificationHarness 6/6 passed.
-- Remaining Phase 7 work: production WorkManager notification worker/scheduler and runtime notification permission UX. Android Gradle/lint/build still needs a real dev machine.
+Phase 7 completed:
+- Subscription use cases: add/update/delete/toggle active, validation-before-write, renewal-date calculation, projected monthly amount.
+- Subscriptions screen and ViewModel: add form, list, pause/resume, delete, mark paid, projected monthly total, due-in-7-days summary.
+- Notification posture: POST_NOTIFICATIONS permission added for Phase 7 only.
+- Notification planning: budget warning/exceeded and monthly summary plans.
+- Local WorkManager scheduler and reminder worker added.
+- Settings entry and navigation route wired.
 
-WHAT IS LEFT TO BUILD (NOT STARTED / NOT COMPLETE)
-- Finish Phase 7 notifications: WorkManager delivery, runtime permission UX, notification scheduling integration.
+Verification in sandbox:
+- SubscriptionHarness: 9/9 passed.
+- Phase7NotificationHarness: 6/6 passed.
+- Android Gradle/lint/build not run here because no Android SDK/Gradle/network.
+
+NEXT:
 - Phase 8 — Android-native: widget, shortcuts, QS tile, biometric lock.
 - Phase 9 — Cloud optional: auth, remote DB, sync engine, backup/restore.
-- Phase 10 — AI: structured extraction, smart categorization, insights.
-- Phase 11 — QA: UI tests, accessibility, offline + migration tests, performance, security review.
-- Phase 12 — Release: signing, Play Console, privacy policy, store listing.
