@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Base platform theme. The visual theme is LeftTheme in Compose
+      (core/designsystem/Theme.kt); this XML theme only covers the window
+      before Compose draws (splash surface, system bars).
+    -->
+    <style name="Theme.Left" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

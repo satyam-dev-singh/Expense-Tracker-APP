@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Original Left brand mark: an open ring with a horizontal baseline,
+  evoking "what remains". Drawn as a vector — no third-party assets.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Ring: outer r=22, inner r=15 (evenOdd punch-out), centered at (54,52) -->
+    <path
+        android:fillColor="#D9F2E4"
+        android:fillType="evenOdd"
+        android:pathData="M54,30 a22,22 0 1 1 -0.01,0 Z M54,37 a15,15 0 1 0 0.01,0 Z" />
+    <!-- Baseline bar -->
+    <path
+        android:fillColor="#D9F2E4"
+        android:pathData="M37,62 h34 a3,3 0 0 1 0,6 h-34 a3,3 0 0 1 0,-6 Z" />
+</vector>

@@ -1,0 +1,23 @@
+# Gradle / build
+.gradle/
+build/
+*/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keystores — never commit signing material (see DEVELOPMENT.md)
+*.jks
+*.keystore
+
+# Room schemas are generated at build time and SHOULD be committed,
+# so they are intentionally not ignored.
