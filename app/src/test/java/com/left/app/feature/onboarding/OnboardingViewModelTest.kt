@@ -6,17 +6,13 @@ import com.left.app.core.data.fake.FakeMonthlyBudgetRepository
 import com.left.app.core.data.fake.FakeOnboardingPreferences
 import com.left.app.core.data.fake.FakeUserProfileRepository
 import com.left.app.core.domain.CompleteOnboarding
+import com.left.app.testutil.MainDispatcherRule
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -25,21 +21,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
-
-/** Swaps Dispatchers.Main for a test dispatcher so ViewModels run on the JVM. */
-class MainDispatcherRule(
-    private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
-) : TestWatcher() {
-    override fun starting(description: Description) {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    override fun finished(description: Description) {
-        Dispatchers.resetMain()
-    }
-}
 
 /**
  * OnboardingViewModel tests (Phase 2): step flow, per-field validation, skip
